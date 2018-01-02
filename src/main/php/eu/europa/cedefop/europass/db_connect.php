@@ -3,7 +3,7 @@
 	* Copyright European Union 2002-2010
 	*
 	*
-	* Licensed under the EUPL, Version 1.1 or – as soon they 
+	* Licensed under the EUPL, Version 1.1 or ï¿½ as soon they 
 	* will be approved by the European Commission - subsequent  
 	* versions of the EUPL (the "Licence"); 
 	* You may not use this work except in compliance with the 
@@ -25,30 +25,34 @@
 /* @var string 
  * The MySQL server address.
  * */
-$db_host     = "localhost";
+$db_host     = "localhost:3306";
 
 /* @var string 
  * The MySQL server user.
  * If you change the DB username you need to change it here also. 
  * */
-$db_user     = "xxxxxx";
+$db_user     = "root";
 
 
 /* @var string
  * The MySQL server password.
  * If you change the DB password for the given username, you need to change it here also.
  *  */
-$db_password = "xxxxxx";
+$db_password = "";
 
-$link = mysql_connect($db_host,$db_user,$db_password);
+//$link = mysql_connect($db_host,$db_user,$db_password);
+$link = mysqli_connect($db_host,$db_user,$db_password);
 
 if (!$link) {
-	die("Could not connect: ".mysql_error().'<br/><center><a href="index.html">Go Back</a></center>');
+	//die("Could not connect: ".mysql_error().'<br/><center><a href="index.html">Go Back</a></center>');
+    die("Could not connect: ".mysqli_error($link).'<br/><center><a href="index.html">Go Back</a></center>');
 }
 /* Select the Database to connect. If you change the DB name in My SQL server you need to change it here also.
  */
-mysql_query("SET NAMES 'utf8'"); 
-mysql_select_db("cvxml",$link);
+//mysql_query("SET NAMES 'utf8'");
+mysqli_query($link, "SET NAMES 'utf8'");
+//mysql_select_db("cvxml",$link);
+mysqli_select_db($link, "cvxml");
 
 include('xml2db.php');
 ?>

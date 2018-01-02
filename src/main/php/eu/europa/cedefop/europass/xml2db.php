@@ -3,7 +3,7 @@
 	* Copyright European Union 2002-2010
 	*
 	*
-	* Licensed under the EUPL, Version 1.1 or – as soon they 
+	* Licensed under the EUPL, Version 1.1 or ï¿½ as soon they 
 	* will be approved by the European Commission - subsequent  
 	* versions of the EUPL (the "Licence"); 
 	* You may not use this work except in compliance with the 
@@ -99,17 +99,17 @@ foreach( $identifications as $identification )
 	} else {$photo = NULL; $photo_type = NULL;}
 
 	#Insert the first set of data in mob_xml table
-	mysql_query("INSERT INTO mob_xml (ID,  FNAME, LNAME, ADDRESS, MUNIC, POSTAL_CODE, CODE_COUNTRY, COUNTRY, PHONE,
+    mysqli_query($link,"INSERT INTO mob_xml (ID,  FNAME, LNAME, ADDRESS, MUNIC, POSTAL_CODE, CODE_COUNTRY, COUNTRY, PHONE,
 									  FAX, MOBILE, EMAIL, GENDER, BIRTHDATE, PHOTO_TYPE, PHOTO)
 							  VALUES (NULL,'$firstname','$lastname','$addressLine','$municipality','$postalCode','$code','$label',
-									  '$telephone','$fax','$mobile','$email','$gender','$birthdate','$photo_type','$photo')",$link)
-									  or die('Could not insert data in Master table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysql_error());
+									  '$telephone','$fax','$mobile','$email','$gender','$birthdate','$photo_type','$photo')")
+    or die('Could not insert data in Master table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 	
 	/* Retrive the generated id for the insert.
 	 * We will use it later to update the master table along with the detail ones with the rest of the data.
 	 */
-	$xmlid = mysql_insert_id();
-	
+	$xmlid = mysqli_insert_id($link);
+
 	# Load the different nationalities in the coresponding variables
 	$nationalities = $identification->getElementsByTagName("nationality");
 	/* For each on of the list elements get the various elements included in the nationality entity
@@ -131,8 +131,9 @@ foreach( $identifications as $identification )
 			$nlabel = NULL;
 		}
 		#Insert the data in the mob_nationality table
-		mysql_query("INSERT INTO mob_nationality (ID, XML_ID, CODE, NATIONALITY)
-										  VALUES (NULL,'$xmlid','$ncode','$nlabel')",$link) or die('Could not insert data in Nationality Table<br/><center><a href="index.html">Go Back</a></center>'.mysql_error());
+        mysqli_query($link,"INSERT INTO mob_nationality (ID, XML_ID, CODE, NATIONALITY)
+										  VALUES (NULL,'$xmlid','$ncode','$nlabel')")
+        or die('Could not insert data in Nationality Table<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 
 	}
 }
@@ -151,10 +152,10 @@ foreach( $applications as $application )
 		$applabel = $application->getElementsByTagName("label")->item(0)->nodeValue;
 	} else {$applabel = NULL;}
 	#Update the data in the mob_xml table
-	mysql_query("UPDATE mob_xml
+    mysqli_query($link,"UPDATE mob_xml
 					SET CODE_APPLICATION = '$appcode',
 						APPLICATION		 = '$applabel'
-				  WHERE ID = '$xmlid'", $link) or die('Could not update Master Table with Application data!!!<br/><center><a href="index.html">Go Back</a></center>'.mysql_error());
+				  WHERE ID = '$xmlid'") or die('Could not update Master Table with Application data!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 }
 
 
@@ -237,11 +238,12 @@ if ($workexperiencelist->length > 0)
 			} else {$weseccodelabel = NULL;}
 		}
 		#Insert the data in the mob_work_experience table
-		mysql_query("INSERT INTO mob_work_experience (ID, XML_ID, DAY_FROM, MONTH_FROM, YEAR_FROM, DAY_TO, MONTH_TO, YEAR_TO,
+        mysqli_query($link,"INSERT INTO mob_work_experience (ID, XML_ID, DAY_FROM, MONTH_FROM, YEAR_FROM, DAY_TO, MONTH_TO, YEAR_TO,
 													  CODE_POSITION, WPOSITION, ACTIVITIES, EMPLOYER_NAME, EMPLOYER_ADDRESS,
 													  EMPLOYER_MUNIC, EMPLOYER_ZCODE, CODE_COUNTRY, COUNTRY, CODE_SECTOR, SECTOR)
 										  VALUES     (NULL,'$xmlid','$fday','$fmonth','$fyear','$tday','$tmonth','$tyear','$pcode','$plabel','$wactivities',
-													  '$wname','$waddress','$wcity','$wpcode','$weccode','$weclabel','$weseccode','$weseccodelabel' )",$link)or die('Could not insert data in Work Experience table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysql_error());
+													  '$wname','$waddress','$wcity','$wpcode','$weccode','$weclabel','$weseccode','$weseccodelabel' )")
+        or die('Could not insert data in Work Experience table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 	}
 
 # Get from the XML all the elements with tag name 'education' and load them in a list.
@@ -278,7 +280,7 @@ if ($educationlist->length > 0)
 			} else {$etday = NULL;}
 		}
 		if ($education->getElementsByTagName("title")->item(0)) {
-			$title = $education->getElementsByTagName("title")->item(0)->nodeValue;
+            $title = mysqli_real_escape_string($link, $education->getElementsByTagName("title")->item(0)->nodeValue);
 		} else {$title = NULL;}
 		if ($education->getElementsByTagName("skills")->item(0)) {
 			$eskills = $education->getElementsByTagName("skills")->item(0)->nodeValue;
@@ -333,12 +335,13 @@ if ($educationlist->length > 0)
 			} else {$eduflabel = NULL;}
 		}
 		#Insert the data in the mob_education table
-		mysql_query("INSERT INTO mob_education (ID, XML_ID, TITLE, SUBJECT, ORG_NAME, ORG_TYPE, ORG_ADDRESS, ORG_MUNIC,
+        mysqli_query($link,"INSERT INTO mob_education (ID, XML_ID, TITLE, SUBJECT, ORG_NAME, ORG_TYPE, ORG_ADDRESS, ORG_MUNIC,
 											    ORG_ZCODE, CODE_COUNTRY, COUNTRY, CODE_LEVEL, EDULEVEL,CODE_EDU_FIELD,EDU_FIELD,
 												DAY_FROM, MONTH_FROM, YEAR_FROM, DAY_TO, MONTH_TO, YEAR_TO)
 										VALUES (NULL,'$xmlid','$title','$eskills','$ename','$orgtype','$eaddress','$ecity','$epcode',
 												'$educcode','$educlabel','$edulcode','$edullabel','$edufcode','$eduflabel',
-												'$efday','$efmonth','$efyear','$etday','$etmonth','$etyear')",$link) or die('Could not insert data in Education table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysql_error());
+												'$efday','$efmonth','$efyear','$etday','$etmonth','$etyear')")
+        or die('Could not insert data in Education table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 	}
 
 # Get from the XML all the elements with tag name 'languagelist' and load them in a list.
@@ -361,10 +364,10 @@ foreach ($languagelists as $languagelist)
 				} else {$mlcode = NULL;}
 				$mllabel = $language->getElementsByTagName("label")->item(0)->nodeValue;
 				#Update the data in the mob_xml table with the mother_language
-				mysql_query("UPDATE mob_xml
+                mysqli_query($link,"UPDATE mob_xml
 					         SET CODE_MOTHER_LANGUAGE = '$mlcode',
 						         MOTHER_LANGUAGE	  = '$mllabel'
-							 WHERE ID = '$xmlid'", $link) or die('Could not update Master table with Mother Language!!!!<br/>'.mysql_error());
+							 WHERE ID = '$xmlid'") or die('Could not update Master table with Mother Language!!!!<br/>'.mysqli_error($link));
 				break;
 			case "europass:foreign" :
 				$flcode             = $language->getElementsByTagName("code")->item($num)->nodeValue;
@@ -375,10 +378,10 @@ foreach ($languagelists as $languagelist)
 				$spokenproduction   = $language->getElementsByTagName("spokenproduction")->item($num)->nodeValue;
 				$writing            = $language->getElementsByTagName("writing")->item($num)->nodeValue;
 				#Insert the data in the mob_language table
-				mysql_query("INSERT INTO mob_language (ID, XML_ID, CODE_LANGUAGE, OLANGUAGE, LISTENING, READING,
+                mysqli_query($link,"INSERT INTO mob_language (ID, XML_ID, CODE_LANGUAGE, OLANGUAGE, LISTENING, READING,
 													   SPOKEN_INTERACTION, SPOKEN_PRODUCTION, WRITING)
 											   VALUES (NULL,'$xmlid','$flcode','$fllabel','$listening','$reading',
-											   		   '$spokeninteraction','$spokenproduction','$writing')",$link) or die('Could not insert data in Language table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysql_error());
+											   		   '$spokeninteraction','$spokenproduction','$writing')") or die('Could not insert data in Language table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 				break;
 		}	
 		
@@ -404,14 +407,15 @@ foreach( $skilllists as $skilllist )
 		$other          = $skillitems->item(5)->nodeValue;
 	}
 	#Update the data in the mob_xml table with the data of the skill section
-	mysql_query("UPDATE mob_xml
+    mysqli_query($link,"UPDATE mob_xml
 				 SET SOCIAL           = '$social',
 					 ORGANISATIONAL	  = '$organisational',
 					 TECHNICAL		  = '$technical',
 					 COMPUTER		  = '$computer',
 					 ARTISTIC		  = '$artistic',
 					 OTHER			  = '$other'
-				 WHERE ID = '$xmlid'", $link) or die('Could not update data in Master table with step 6 data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysql_error());
+				 WHERE ID = '$xmlid'")
+    or die('Could not update data in Master table with step 6 data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 }
 
 # Get from the XML all the elements with tag name 'drivinglicence' and load them in a list.
@@ -423,8 +427,9 @@ if ($drivingcnt > 0)
 	for ($idx = 0; $idx < $drivingcnt; $idx++) {
 		$driving_licence = $drivinglist->item($idx)->nodeValue;
 		#Insert the data in the mob_driving_licence table
-		mysql_query("INSERT INTO mob_driving_licence (ID, XML_ID, DRIVING_SKILL)
-											  VALUES (NULL,'$xmlid','$driving_licence')",$link) or die('Could not insert data in Driving Skill table!!!!<br/><center><a href="index.html">Go Back</a></center>');
+        mysqli_query($link,"INSERT INTO mob_driving_licence (ID, XML_ID, DRIVING_SKILL)
+											  VALUES (NULL,'$xmlid','$driving_licence')")
+        or die('Could not insert data in Driving Skill table!!!!<br/><center><a href="index.html">Go Back</a></center>');
 		
 	}
 }
@@ -443,14 +448,15 @@ foreach( $misclists as $misclist )
 		$annexes    = $miscitems->item(1)->nodeValue;
 	}
 	#Update the data in the mob_xml table with the data of the misc skill section
-	mysql_query("UPDATE mob_xml
+    mysqli_query($link,"UPDATE mob_xml
 				 SET ADDITIONAL	= '$additional',
 					 ANNEXES	= '$annexes'
-				 WHERE ID = '$xmlid'", $link) or die('Could not update data in Master table with step 7 data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysql_error());
+				 WHERE ID = '$xmlid'")
+    or die('Could not update data in Master table with step 7 data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 }
 
 #Close the connection with the database
-mysql_close($link);
+mysqli_close($link);
 #Delete the uploaded file
 unlink($xml);
 echo '<center><img src="./images/cv_top_banner1.jpg" alt="Europass CV" /></center><br/><HR size="2"/><br/>';
