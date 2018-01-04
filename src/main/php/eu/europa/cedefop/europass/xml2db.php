@@ -38,12 +38,12 @@ $doc->load($xml);
 /* Load the data of the first step, included in the <identification> tag.
  * The data are loaded in mob_xml table.*/
 
-# Get from the XML all the elements with tag name 'identification' and load them in a list.
+# Get from the XML all the elements with tag name 'Identification' and load them in a list.
 $identifications = $doc->getElementsByTagName("Identification");
-foreach( $identifications as $identification )
+foreach($identifications as $identification)
 {
     /* For each on of the list elements get the various elements included in the identification entity
-     * and load them in the coresponding variables. */
+     * and load them in the corresponding variables. */
     if ($identification->getElementsByTagName("FirstName") && $identification->getElementsByTagName("FirstName")->item(0)) {
         $firstname    = $identification->getElementsByTagName("FirstName")->item(0)->nodeValue;
     } else {$firstname = NULL;}
@@ -125,7 +125,7 @@ foreach( $identifications as $identification )
 									  PHONE2, PHONE3, EMAIL, GENDER, BIRTHDATE, PHOTO_TYPE, PHOTO)
 							  VALUES (NULL,'$firstname','$lastname','$addressLine','$municipality','$postalCode','$code','$label',
 									  '$telephone','$telephone2','$telephone3','$email','$gender','$birthdate','$photo_type','$photo')")
-    or die('Could not insert data in Master XML table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
+                or die('Could not insert data in Master XML table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 
     /* Retrive the generated id for the insert.
      * We will use it later to update the master table along with the detail ones with the rest of the data.
@@ -152,7 +152,7 @@ foreach( $identifications as $identification )
         #Insert the data in the mob_nationality table
         mysqli_query($link,"INSERT INTO mob_nationality (ID, XML_ID, CODE, NATIONALITY)
 										  VALUES (NULL,'$xmlid','$ncode','$nlabel')")
-        or die('Could not insert data in Nationality Table<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
+                    or die('Could not insert data in Nationality Table<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
     }
 }
 
@@ -354,7 +354,7 @@ if ($educationlist->length > 0)
 										VALUES (NULL,'$xmlid','$title','$eskills','$ename','$eaddress','$ecity','$epcode',
 												'$educcode','$educlabel','$edulcode','$edullabel','$edufcode','$eduflabel',
 												'$efday','$efmonth','$efyear','$etday','$etmonth','$etyear')")
-        or die('Could not insert data in Education table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
+                    or die('Could not insert data in Education table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
     }
 
 
@@ -397,7 +397,7 @@ foreach ($foreignLanguagelists as $language) {
 													   SPOKEN_INTERACTION, SPOKEN_PRODUCTION, WRITING)
 											   VALUES (NULL,'$xmlid','$flcode','$fllabel','$listening','$reading',
 											   		   '$spokeninteraction','$spokenproduction','$writing')")
-    or die('Could not insert data in Other Languages table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
+                    or die('Could not insert data in Other Languages table!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 }
 
 # Get from the XML all skills and competences and load them in a list.
@@ -435,7 +435,7 @@ mysqli_query($link,"UPDATE mob_xml
 					 COMPUTER		  = '$computer',
 					 OTHER			  = '$other'
 				 WHERE ID = '$xmlid'")
-or die('Could not update data in Master table with skills/competences data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
+        or die('Could not update data in Master table with skills/competences data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 
 
 # Get from the XML all the elements with tag name 'Driving Licence' and load them in a list.
@@ -465,7 +465,7 @@ foreach($achitems as $achitem) {
 mysqli_query($link,"UPDATE mob_xml
 				 SET ADDITIONAL	= '$allAdditional'
 				 WHERE ID = '$xmlid'")
-or die('Could not update data in Master table with additional data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
+        or die('Could not update data in Master table with additional data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 
 
 $annexitems = $doc->getElementsByTagName("Attachment");
@@ -483,7 +483,7 @@ foreach($annexitems as $annexitem) {
 mysqli_query($link,"UPDATE mob_xml
 				 SET ANNEXES	= '$allAnnexes'
 				 WHERE ID = '$xmlid'")
-or die('Could not update data in Master table with annexes data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
+        or die('Could not update data in Master table with annexes data!!!!<br/><center><a href="index.html">Go Back</a></center>'.mysqli_error($link));
 
 
 #Close the connection with the database

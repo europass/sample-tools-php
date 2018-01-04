@@ -40,18 +40,14 @@ $db_user     = "root";
  *  */
 $db_password = "";
 
-//$link = mysql_connect($db_host,$db_user,$db_password);
 $link = mysqli_connect($db_host,$db_user,$db_password);
 
 if (!$link) {
-	//die("Could not connect: ".mysql_error().'<br/><center><a href="index.html">Go Back</a></center>');
     die("Could not connect: ".mysqli_error($link).'<br/><center><a href="index.html">Go Back</a></center>');
 }
 /* Select the Database to connect. If you change the DB name in My SQL server you need to change it here also.
  */
-//mysql_query("SET NAMES 'utf8'");
 mysqli_query($link, "SET NAMES 'utf8'");
-//mysql_select_db("cvxml",$link);
 mysqli_select_db($link, "cvxml");
 
 include('xml2db.php');

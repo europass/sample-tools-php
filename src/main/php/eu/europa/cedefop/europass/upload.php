@@ -3,7 +3,7 @@
 	* Copyright European Union 2002-2010
 	*
 	*
-	* Licensed under the EUPL, Version 1.1 or – as soon they 
+	* Licensed under the EUPL, Version 1.1 or ï¿½ as soon they 
 	* will be approved by the European Commission - subsequent  
 	* versions of the EUPL (the "Licence"); 
 	* You may not use this work except in compliance with the 
@@ -26,11 +26,19 @@
  * The file used to upload the XML or PDF+XML file.
  */
 
-/* @var $target_path 
+
+namespace eu\europa\cedefop\europass;
+include 'RestServiceHandler.php';
+
+// Get RestServiceHandler instance
+$rsHandlerInstance = RestServiceHandler::getInstance();
+
+/* @var $target_path
  * Tempory Directory to upload the file.
  * */
 $upload_path = "tmp/";
 $target_path = $upload_path.basename( $_FILES['uploadedxml']['name']);
+$target_output_path = $upload_path.basename( 'xmlOutput.xml');
 
 /* @var $maxfilesize
  * Maximum file size.
@@ -60,16 +68,15 @@ if ($_FILES['uploadedxml']['type'] == NULL) {
 #If everything is ok we try to upload it and start the parsing.
 else {
 	if(move_uploaded_file($_FILES['uploadedxml']['tmp_name'], $target_path)) {
-#Check if the file is XML or PDF
+        #Check if the file is PDF/ XML
 		if ($_FILES['uploadedxml']['type'] == "application/pdf") {
-			$command = 'pdftk '.$target_path.' unpack_files output ./tmp';
-			exec($command, $results);
-			$xml = $upload_path.'CV.xml';
+            $rsHandlerInstance->xmlExtractFromPDF($target_path);
+            $xml = $target_output_path;
 			unlink($target_path);
 		} else {
 			$xml = $target_path;
 		}
-#Check if the user wants to upload the file to the database or to a form.
+        #Check if the user wants to upload the file to the database or to a form.
 		if      ($_POST['upload'] == 'sql') 	{include('db_connect.php');} #User wants to upload the file in the db
 		else if ($_POST['upload'] == 'form')	{include('xml2form.php');} #User wants to upload the file in a form
 	} else {

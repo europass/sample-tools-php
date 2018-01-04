@@ -3,23 +3,23 @@
 	* Copyright European Union 2002-2010
 	*
 	*
-	* Licensed under the EUPL, Version 1.1 or � as soon they 
-	* will be approved by the European Commission - subsequent  
-	* versions of the EUPL (the "Licence"); 
-	* You may not use this work except in compliance with the 
-	* Licence. 
-	* You may obtain a copy of the Licence at: 
+	* Licensed under the EUPL, Version 1.1 or � as soon they
+	* will be approved by the European Commission - subsequent
+	* versions of the EUPL (the "Licence");
+	* You may not use this work except in compliance with the
+	* Licence.
+	* You may obtain a copy of the Licence at:
 	*
 	* http://ec.europa.eu/idabc/eupl.html
 	*
-	*  
-	* Unless required by applicable law or agreed to in 
-	* writing, software distributed under the Licence is 
-	* distributed on an "AS IS" basis, 
-	* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
-	* express or implied. 
-	* See the Licence for the specific language governing 
-	* permissions and limitations under the Licence. 
+	*
+	* Unless required by applicable law or agreed to in
+	* writing, software distributed under the Licence is
+	* distributed on an "AS IS" basis,
+	* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+	* express or implied.
+	* See the Licence for the specific language governing
+	* permissions and limitations under the Licence.
 	*
 	*/
 /* xml2form.php
@@ -52,7 +52,7 @@ $identifications = $doc->getElementsByTagName("Identification");
 
 /* For each on of the list elements get the various elements included in the identification entity
  * and load them in the coresponding variables. */
-foreach( $identifications as $identification )
+foreach($identifications as $identification)
 {
     if ($identification->getElementsByTagName("FirstName") && $identification->getElementsByTagName("FirstName")->item(0)) {
         $firstname    = $identification->getElementsByTagName("FirstName")->item(0)->nodeValue;
@@ -181,9 +181,7 @@ if ($gender != NULL) {
 
 # Load the data of the second step, included in the <Headline/ Description> tag.
 $applications = $doc->getElementsByTagName("Headline");
-
 if ($doc->getElementsByTagName("Headline")) {
-
     if ($doc->getElementsByTagName("Headline") && $doc->getElementsByTagName("Headline")->item(0)) {
         $headlineTypeNode = $doc->getElementsByTagName("Headline")->item(0);
 
@@ -206,7 +204,6 @@ if ($doc->getElementsByTagName("Headline")) {
         }
     }
 }
-
 
 #Load the data of the third step, included in the <workexperiencelist> tag.
 $workexperiencelist = $doc->getElementsByTagName("WorkExperience");
@@ -418,8 +415,14 @@ if ($foreignLanguagelists->length > 0) {
     echo '<br/><h3>Other language(s) - Self-assessment</h3><br/>';
 }
 foreach ($foreignLanguagelists as $language) {
-    $flcode             = $language->getElementsByTagName("Code")->item(0)->nodeValue;
-    $fllabel            = $language->getElementsByTagName("Label")->item(0)->nodeValue;
+    if ($language->getElementsByTagName("Code") && $language->getElementsByTagName("Code")->item(0)) {
+        $flcode             = $language->getElementsByTagName("Code")->item(0)->nodeValue;
+    }
+    else {$flcode = NULL;}
+    if ($language->getElementsByTagName("Label") && $language->getElementsByTagName("Label")->item(0)) {
+        $fllabel            = $language->getElementsByTagName("Label")->item(0)->nodeValue;
+    }
+    else {$fllabel = NULL;}
     $listening          = $language->getElementsByTagName("Listening")->item(0)->nodeValue;
     $reading            = $language->getElementsByTagName("Reading")->item(0)->nodeValue;
     $spokeninteraction  = $language->getElementsByTagName("SpokenInteraction")->item(0)->nodeValue;
@@ -545,7 +548,6 @@ foreach($annexitems as $annexitem) {
         if ($annexes != NULL)	{echo '<label for"annexes" style="font-weight: bold; display:block;"></label></br><span id="annexes">'.$annexes."</span>";}
     }
 }
-
 
 #Delete the uploaded file
 unlink($xml);
