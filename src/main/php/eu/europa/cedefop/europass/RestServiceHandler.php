@@ -30,7 +30,8 @@ class RestServiceHandler
 {
     static private $instance = null;
     static private $PDF_TO_XML_EXTRACT_URL = 'https://europass.cedefop.europa.eu/rest/v1/document/extraction';
-    static private $absolutePath = 'tmp/';
+    static private $CONTENT_TYPE = 'application/pdf';
+    static private $ACCEPT_TYPE = 'application/xml';
 
     /**
      * Class constructor
@@ -51,18 +52,23 @@ class RestServiceHandler
         return self::$instance;
     }
 
-    public function xmlExtractFromPDF($fileInput){
-
-        // Get data from user input file
-        $data = file_get_contents($fileInput);;
-
+    private function configureServiceAttributes($uploadPath, $outputFilename, $data) {
         $serviceAttributes = array();
-        $serviceAttributes['content-type'] = 'application/pdf';
-        $serviceAttributes['accept'] = 'application/xml';
+        $serviceAttributes['content-type'] = self::$CONTENT_TYPE;
+        $serviceAttributes['accept'] = self::$ACCEPT_TYPE;
         $serviceAttributes['url'] = self::$PDF_TO_XML_EXTRACT_URL;
         $serviceAttributes['data'] = $data;
         $serviceAttributes['content-length'] = strlen($data);
-        $serviceAttributes['outputFile'] = self::$absolutePath.'xmlOutput.xml';
+        $serviceAttributes['outputFile'] = $uploadPath.$outputFilename;
+
+        return @$serviceAttributes;
+    }
+
+    public function xmlExtractFromPDF($fileInput, $uploadPath, $outputFilename){
+
+        // Get data from user input file
+        $data = file_get_contents($fileInput);
+        $serviceAttributes = self::configureServiceAttributes($uploadPath, $outputFilename, $data);
 
         $requestResult = array();
 
@@ -96,6 +102,7 @@ class RestServiceHandler
 
         $requestResult['status'] = $http_status;
         $requestResult['message'] = $errmsg;
-    }
 
+        return $requestResult;
+    }
 }

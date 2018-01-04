@@ -33,12 +33,19 @@ include 'RestServiceHandler.php';
 // Get RestServiceHandler instance
 $rsHandlerInstance = RestServiceHandler::getInstance();
 
-/* @var $target_path
- * Tempory Directory to upload the file.
- * */
+
 $upload_path = "tmp/";
-$target_path = $upload_path.basename( $_FILES['uploadedxml']['name']);
-$target_output_path = $upload_path.basename( 'xmlOutput.xml');
+$output_filename = "xmlOutput.xml";
+
+/* @var $target_path
+ * Temporary path for input xml.
+ * */
+$target_path = $upload_path.basename($_FILES['uploadedxml']['name']);
+
+/* @var $target_output_path
+ * Temporary path for output xml (from pdf).
+ * */
+$target_output_path = $upload_path.basename($output_filename);
 
 /* @var $maxfilesize
  * Maximum file size.
@@ -67,15 +74,26 @@ if ($_FILES['uploadedxml']['type'] == NULL) {
 
 #If everything is ok we try to upload it and start the parsing.
 else {
-	if(move_uploaded_file($_FILES['uploadedxml']['tmp_name'], $target_path)) {
+    if(move_uploaded_file($_FILES['uploadedxml']['tmp_name'], $target_path)) {
         #Check if the file is PDF/ XML
-		if ($_FILES['uploadedxml']['type'] == "application/pdf") {
-            $rsHandlerInstance->xmlExtractFromPDF($target_path);
-            $xml = $target_output_path;
-			unlink($target_path);
-		} else {
-			$xml = $target_path;
-		}
+        if ($_FILES['uploadedxml']['type'] == "application/pdf") {
+            $requestResult = $rsHandlerInstance->xmlExtractFromPDF($target_path, $upload_path, $output_filename);
+
+            if ($requestResult['status'] != 200) {
+                echo '<center><img src="./images/cv_top_banner1.jpg" alt="Europass CV" />';
+                echo 'Sorry, there was a problem extracting XML from PDF.<br />';
+                echo '<a href="index.html">Go Back</a>';
+                unlink($_FILES['uploadedxml']['tmp_name']);
+                return;
+            }
+            else {
+                $xml = $target_output_path;
+                unlink($target_path);
+            }
+
+        } else {
+            $xml = $target_path;
+        }
         #Check if the user wants to upload the file to the database or to a form.
 		if      ($_POST['upload'] == 'sql') 	{include('db_connect.php');} #User wants to upload the file in the db
 		else if ($_POST['upload'] == 'form')	{include('xml2form.php');} #User wants to upload the file in a form
