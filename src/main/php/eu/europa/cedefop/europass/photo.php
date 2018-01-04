@@ -3,7 +3,7 @@
 	* Copyright European Union 2002-2010
 	*
 	*
-	* Licensed under the EUPL, Version 1.1 or – as soon they 
+	* Licensed under the EUPL, Version 1.1 or ï¿½ as soon they 
 	* will be approved by the European Commission - subsequent  
 	* versions of the EUPL (the "Licence"); 
 	* You may not use this work except in compliance with the 
@@ -29,19 +29,19 @@ $img_tmp = base64_decode($photo);
 $ses = rand();
 
 #Create the image file from the string based on the image type.
-if ($photo_type == 'JPEG' || $photo_type == 'JPG') {
+if ($photo_type == 'image/jpeg' || $photo_type == 'image/jpg') {
     $file = fopen($upload_path.$ses.'-cv.jpg','wb');
     fwrite($file,$img_tmp);
 	fclose($file);
 	$image = $upload_path.$ses.'-cv.jpg';
 	$img = @imagecreatefromjpeg($image);
-} else if ($photo_type == 'GIF') {
+} else if ($photo_type == 'image/gif') {
     $file = fopen($upload_path.$ses.'-cv.gif','wb');
     fwrite($file,$img_tmp);
 	fclose($file);
 	$image = $upload_path.$ses.'-cv.gif';
 	$img = @imagecreatefrompng($image);
-} else if ($photo_type == 'PNG') {
+} else if ($photo_type == 'image/png') {
     $file = fopen($upload_path.$ses.'-cv.png','wb');
     fwrite($file,$img_tmp);
 	fclose($file);
