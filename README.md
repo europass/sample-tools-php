@@ -26,7 +26,8 @@ System requirements
 
 Run application
 ===============
-1. Start Apache server (before you should include all PHP files/ static pages/images/ etc of the app under under phpRootPath\htdocs\appFolder)
+1. Start Apache server (before you should include all PHP files/ static pages/images/ etc of the app under under phpRootPath\htdocs\appFolder).
+2. Start DB server.
 2. Open main php page. e.g for localhost: http://localhost/appFolder/.
 This page includes the 2 main actions : Upload PDF+XML file to database or Upload PDF+XML file to html forms.
 
