@@ -194,7 +194,8 @@ if ($doc->getElementsByTagName("Headline")) {
         }
         else { $applabel = NULL;}
         if ($headlineTypeNode->getElementsByTagName("Description") && $headlineTypeNode->getElementsByTagName("Description")->item(0)) {
-            $appDescrlabel = trim($headlineTypeNode->getElementsByTagName("Description")->item(0)->nodeValue);
+            $appDescrNode = $headlineTypeNode->getElementsByTagName("Description")->item(0);
+            $appDescrlabel = $appDescrNode->getElementsByTagName("Label")->item(0)->nodeValue;
         }
 
         #Load the Application in the form
