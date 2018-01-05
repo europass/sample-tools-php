@@ -30,4 +30,4 @@ Run application
 2. Open main php page. e.g for localhost: http://localhost/appFolder/.
 This page includes the 2 main actions : Upload PDF+XML file to database or Upload PDF+XML file to html forms.
 
-Previously, user should run DB schema query to initialize all tables (under resources/SQL/cvxml.sql).  
+Finally, user should run DB schema query to initialize all tables (under resources/SQL/cvxml.sql).  
