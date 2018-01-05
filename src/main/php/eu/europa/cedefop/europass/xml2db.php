@@ -40,6 +40,7 @@ $doc->load($xml);
 
 # Get from the XML all the elements with tag name 'Identification' and load them in a list.
 $identifications = $doc->getElementsByTagName("Identification");
+$gender = NULL;
 foreach($identifications as $identification)
 {
     /* For each on of the list elements get the various elements included in the identification entity
@@ -63,10 +64,10 @@ foreach($identifications as $identification)
         $contactInfoNode = $identification->getElementsByTagName("ContactInfo")->item(0);
         if ($contactInfoNode->getElementsByTagName("Country")) {
             $country    = $contactInfoNode->getElementsByTagName("Country")->item(0);
-            if ($country->getElementsByTagName("Code")->item(0)) {
+            if ($country != null && $country->getElementsByTagName("Code") && $country->getElementsByTagName("Code")->item(0)) {
                 $code  = $country->getElementsByTagName("Code")->item(0)->nodeValue;
             } else {$code = NULL;}
-            if ($country->getElementsByTagName("Label")->item(0)) {
+            if ($country != null && $country->getElementsByTagName("Label") && $country->getElementsByTagName("Label")->item(0)) {
                 $label = $country->getElementsByTagName("Label")->item(0)->nodeValue;
             } else {$label = NULL;}
         }
@@ -387,11 +388,32 @@ foreach ($foreignLanguagelists as $language) {
         $fllabel            = $language->getElementsByTagName("Label")->item(0)->nodeValue;
     }
     else { $fllabel = NULL; }
-    $listening          = $language->getElementsByTagName("Listening")->item(0)->nodeValue;
-    $reading            = $language->getElementsByTagName("Reading")->item(0)->nodeValue;
-    $spokeninteraction  = $language->getElementsByTagName("SpokenInteraction")->item(0)->nodeValue;
-    $spokenproduction   = $language->getElementsByTagName("SpokenProduction")->item(0)->nodeValue;
-    $writing            = $language->getElementsByTagName("Writing")->item(0)->nodeValue;
+
+    if ($language->getElementsByTagName("Label") && $language->getElementsByTagName("Label")->item(0)) {
+        $fllabel            = $language->getElementsByTagName("Label")->item(0)->nodeValue;
+    }
+    else { $fllabel = NULL; }
+    if ($language->getElementsByTagName("Listening") && $language->getElementsByTagName("Listening")->item(0)) {
+        $listening          = $language->getElementsByTagName("Listening")->item(0)->nodeValue;
+    }
+    else {$listening = NULL;}
+    if ($language->getElementsByTagName("Reading") && $language->getElementsByTagName("Reading")->item(0)) {
+        $reading            = $language->getElementsByTagName("Reading")->item(0)->nodeValue;
+    }
+    else {$reading = NULL;}
+    if ($language->getElementsByTagName("SpokenInteraction") && $language->getElementsByTagName("SpokenInteraction")->item(0)) {
+        $spokeninteraction  = $language->getElementsByTagName("SpokenInteraction")->item(0)->nodeValue;
+    }
+    else {$spokeninteraction = NULL;}
+    if ($language->getElementsByTagName("SpokenProduction") && $language->getElementsByTagName("SpokenProduction")->item(0)) {
+        $spokenproduction   = $language->getElementsByTagName("SpokenProduction")->item(0)->nodeValue;
+    }
+    else {$spokenproduction = NULL;}
+    if ($language->getElementsByTagName("Writing") && $language->getElementsByTagName("Writing")->item(0)) {
+        $writing            = $language->getElementsByTagName("Writing")->item(0)->nodeValue;
+    }
+    else {$writing = NULL;}
+
 
     #Insert the data in the mob_language table
     mysqli_query($link,"INSERT INTO mob_language (ID, XML_ID, CODE_LANGUAGE, OLANGUAGE, LISTENING, READING,
