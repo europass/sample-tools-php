@@ -78,7 +78,11 @@ foreach($identifications as $identification)
     }
     if ($identification->getElementsByTagName("TelephoneList")) {
         $telephones = $identification->getElementsByTagName("TelephoneList");
-        if ($telephones->length < 1) {$telephone=NULL; $telephone2=NULL; $telephone3=NULL;}
+		
+        $telephone=NULL;
+	$telephone2=NULL;
+	$telephone3=NULL;
+		
         foreach ($telephones as $telephone) {
             $index = 0;
             foreach ($identification->getElementsByTagName("Telephone") as $telephoneNode) {
@@ -88,11 +92,9 @@ foreach($identifications as $identification)
                 if ($index == 1 && $telephoneNode->getElementsByTagName("Contact")) {
                     $telephone2 = $telephoneNode->getElementsByTagName("Contact")->item(0)->nodeValue;
                 }
-                else {$telephone2 = NULL;}
                 if ($index == 2 && $telephoneNode->getElementsByTagName("Contact")) {
                     $telephone3 = $telephoneNode->getElementsByTagName("Contact")->item(0)->nodeValue;
                 }
-                else {$telephone3 = NULL;}
                 $index ++;
             }
         }
