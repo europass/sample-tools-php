@@ -40,13 +40,13 @@ if ($photo_type == 'image/jpeg' || $photo_type == 'image/jpg') {
     fwrite($file,$img_tmp);
 	fclose($file);
 	$image = $upload_path.$ses.'-cv.gif';
-	$img = @imagecreatefrompng($image);
+	$img = @imagecreatefromgif($image);
 } else if ($photo_type == 'image/png') {
     $file = fopen($upload_path.$ses.'-cv.png','wb');
     fwrite($file,$img_tmp);
 	fclose($file);
 	$image = $upload_path.$ses.'-cv.png';
-	$img = @imagecreatefromgif($image);
+	$img = @imagecreatefrompng($image);
 }
 
 #Resize the image to fit 113x151.
